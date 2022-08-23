@@ -6,7 +6,7 @@ const imagen ={
     instrucciones:'assets/imagenes/instrucciones.png',
     dinero: 'assets/imagenes/dinero.png',
     botom: 'assets/imagenes/botom.png',
-    fondoPrincipal:'assets/imagenes/fondoPrincipal',
+    fondoPrincipal:'assets/imagenes/fondoPrincipal.png',
     harley:'assets/imagenes/harley.png',
     joker: 'assets/imagenes/joker.png',
     logo: 'assets/imagenes/logo.png',
@@ -19,7 +19,7 @@ const imagen ={
     espantapajaro: 'assets/imagenes/espantapajaro.png',        
 
 }
-
+//coloco valores de mi escnario
 class background {
     constructor(){
         this.x = 0;
@@ -32,12 +32,14 @@ class background {
             this.dibujar();
         }
     }
+    //dibujo mi escenario
     dibujar(){
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
     }
-    cambiarImg(){
+    //limpio mi escenario y coloco el siguiente
+    cambiarImg(img){
         ctx.clearRect(0,0,canvas.width,canvas.height);
-        this.img.src=imagen.instrucciones;
+        this.img.src=img
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
     }
 }
@@ -45,9 +47,36 @@ const fondo = new background();
 
 window.onload = ()=> {
     document.getElementById('boton-start').onclick=() =>{
-        fondo.cambiarImg()
+        fondo.cambiarImg(imagen.instrucciones)
         const menu = document.getElementById('boton-start');
-        menu.style.display='none'
+        menu.style.display='none'        
+
+    }                                                                                                                                                                                                                                                                                       
+}
+
+//se añade comandos (f continuar , espacio-disparar, arriba-saltar, etc)
+//se manda a llamar siguiente escenario con case 70
+window.addEventListener('keydown',({keyCode}) => {
+    switch(keyCode){
+        case 70:
+            fondo.cambiarImg(imagen.fondoPrincipal)
+            break;
+        case 32:
+            harley.dispara()
+            break;
+        case 38:
+            harley.saltar()
+            break;
+        case 40:
+            harley.agacha()
+            break;
+        case 37:
+            harley.voltea()
+            break;
+        case 39:
+            harley.avanza()
+            break;
         
     }
-}
+    console.log(32)
+})
