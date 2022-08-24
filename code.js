@@ -2,6 +2,7 @@ let canvas = document.querySelector('canvas')
 let ctx = canvas.getContext('2d');
 
 let iniciar = false; //variable para controlar inicio
+let inteval ; //controla velocidad de videojuego
 
 // se crea objeto con todas las imagenes
 const imagen ={
@@ -11,9 +12,11 @@ const imagen ={
     botom: 'assets/imagenes/botom.png',
     fondoPrincipal:'assets/imagenes/fondoPrincipal.png',
     harley:'assets/imagenes/harleyPer.png',
+    harleyIzq:'assets/imagenes/harleyIzq.png',
     joker: 'assets/imagenes/joker.png',
     logo: 'assets/imagenes/logo.png',
-    martillo:  'assets/imagenes/martillo.png',
+    martilloDer: 'assets/imagenes/martilloDer.png',
+    martilloIzq: 'assets/imagenes/martilloIzq.png',
     murcielago: 'assets/imagenes/murcielago.png',
     pantallaFinal: 'assets/imagenes/pantallaFinal',
     pinguiDerecha: 'assets/imagenes/pinguiDerecha',
@@ -28,9 +31,9 @@ class harley {
         this.y = 365;
         this.width = 90;
         this.height = 90;
-        this.vida = 3;    //ver
-        this.puntuacion = 0; //ver
-        this.saltar = false  //veer
+        this.vida = 3;              //pendiente
+        this.puntuacion = 0;          //pendiente
+        this.velocidad = 8;            //le digo a que velocidad se mueve mi personaje
         this.img= new Image()
         this.img.src = imagen.harley;
         this.img.onload=()=>{
@@ -40,6 +43,14 @@ class harley {
 
     dibujarHarley(){
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
+    }
+    moverDerecha(){
+        this.img.src=imagen.harley     //inserto imagen para que actualize dependiendo el comando
+        this.x += this.velocidad
+    }
+    moverIzquierda(){
+        this.img.src=imagen.joker     //inserto imagen para que actualize dependiendo el comando
+        this.x -= this.velocidad
     }
 }          
 
@@ -58,6 +69,7 @@ class background {
     }
     //dibujo mi escenario
     dibujar(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
 
     }
@@ -85,24 +97,33 @@ window.onload = ()=> {
 //se añade comando de keycode tecla f 
 //se manda a llamar siguiente escenario con case 70
 window.addEventListener('keydown',({keyCode}) => {
-    switch(keyCode){
-        case 70:
-           if(iniciar){
-             iniciarJuego()
-           }
-        break;
-        
+    if(iniciar){
+        switch(keyCode){
+            case 70:
+                iniciarJuego()
+                break;
+            case 39:
+                personaje.moverDerecha();
+                break;
+            case 37:
+                personaje.moverIzquierda();
+                break;
+        }
     }    
 })
+
+//funcion para actualizar el juego y pintar 
+const update =()=>{
+    fondo.cambiarImg(imagen.fondoPrincipal);
+    setInterval(()=>{
+        personaje.dibujarHarley()
+    })
+}
 //se inicializa el juego
 const iniciarJuego =()=>{
-    iniciar= true;
-    fondo.cambiarImg(imagen.fondoPrincipal) 
 
-// se pinta mi personaje
-    setInterval(() => {
-        personaje.dibujarHarley()
-    },50)
+// se actualiza juego 800 fotogramas x segundo
+    interval = setInterval(update,1000/800)
 }
 
 
