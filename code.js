@@ -2,8 +2,10 @@ let canvas = document.querySelector('canvas')
 let ctx = canvas.getContext('2d');
 
 let iniciar = false; //variable para controlar inicio
-let inteval ; //controla velocidad de videojuego
-let martillos=[]  //se crea array martillo
+let inteval ; //controla velocidad de videojuego , actualizacion
+let martillos =[]  //se crea array martillo
+let enemigos = []   // array enemigos
+let frames = 0;     //indica cada que tiempo se actualiza enemigos
 
 // se crea objeto con todas las imagenes
 const imagen ={
@@ -19,9 +21,9 @@ const imagen ={
     martilloDer: 'assets/imagenes/martilloDer.png',
     martilloIzq: 'assets/imagenes/martilloIzq.png',
     murcielago: 'assets/imagenes/murcielago.png',
-    pantallaFinal: 'assets/imagenes/pantallaFinal',
-    pinguiDerecha: 'assets/imagenes/pinguiDerecha',
-    pinguino: 'assets/imagenes/pinguino',
+    pantallaFinal: 'assets/imagenes/pantallaFinal.png',
+    pinguiDerecha: 'assets/imagenes/pinguiDerecha.png',
+    pinguino: 'assets/imagenes/pinguino.png',
     pistola: 'assets/imagenes/pistola.png',
     espantapajaro: 'assets/imagenes/espantapajaro.png',        
 
@@ -59,6 +61,57 @@ class harley {
     }
 }          
 
+class enemigo{                               //se crea enemigos
+    constructor(posicion,velocidad){
+        this.posicion =posicion
+        this.x = posicion
+        this.y = 385
+        this.width = 90
+        this.height = 90
+        this.velocidad = velocidad
+        this.img = new Image();
+        this.dibujarEnemigo()
+    }
+    dibujarEnemigo(){
+        if(this.posicion == 0){
+            this.img.src = imagen.pinguino
+            this.x += this.velocidad
+        }
+        else{
+            this.height= 110
+            this.y =360
+            this.img.src = imagen.espantapajaro
+
+            this.x -= this.velocidad
+        }
+        ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
+    }    
+}
+
+const generarEnemigo = ()=> {    
+    if(frames %  45 === 0){                                        //indica cada cuanto
+        let aux = Math.floor((Math.random() * 2));                
+        let velocidad = Math.random() *  (0.05 -0.02) +0.05          //velocidad
+        if(aux === 0){
+            enemigos.push(new enemigo(0,velocidad))
+        }
+        else{
+            enemigos.push(new enemigo(1000,velocidad))
+        }
+    }
+}
+const dibujarEnemigo  =() =>{
+    enemigos.forEach((enemi)=>{
+        enemi.dibujarEnemigo()
+    })
+}
+const borrarEnemigo = () =>{                   //borra 
+    enemigos.forEach((enemi,index)=>{
+        if( enemi.x <= 0 || enemi.x>= 1000){
+            enemigos.splice(index , 1)
+        }
+    })
+}
 //coloco valores de mi escenario
 class background {
     constructor(){
@@ -174,13 +227,19 @@ window.addEventListener('keyup',({keyCode}) =>{
 
 //funcion para actualizar el juego y pintar 
 const update =()=>{
+    frames++
+    console.log(frames)
     fondo.cambiarImg(imagen.fondoPrincipal);
+    generarEnemigo()
+    borraMartillo()
+    borrarEnemigo()
     setInterval(()=>{
         personaje.dibujarHarley()
-        dibujarMartillo()
-    })
-    borraMartillo()
+        dibujarEnemigo()
+        dibujarMartillo()        
+    })    
 }
+
 //se inicializa el juego
 const iniciarJuego =()=>{
 
