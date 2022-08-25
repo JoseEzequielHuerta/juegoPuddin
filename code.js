@@ -42,7 +42,7 @@ class harley {
         this.height = 90;
         this.vida = 3;              //pendiente
         this.puntuacion = 0;          //pendiente
-        this.velocidad = 5;            //le digo a que velocidad se mueve mi personaje
+        this.velocidad = 9;            //le digo a que velocidad se mueve mi personaje
         this.direccion = false        //le indico que mi personaje aviente martillo der
         this.img= new Image()
         this.img.src = imagen.harley;
@@ -113,9 +113,9 @@ class enemigo{                               //se crea enemigos
 }
 
 const generarEnemigo = ()=> {    
-    if(frames %  30 === 0){                                        //indica cada cuanto
+    if(frames %  20 === 0){                                        //indica cada cuanto
         let aux = Math.floor((Math.random() * 2));                
-        let velocidad = Math.random() *  (0.09 -0.0) +0.05          //velocidad
+        let velocidad = Math.random() *  (0.09 -0.) +0.05          //velocidad
         if(aux === 0){
             enemigos.push(new enemigo(0,velocidad))
         }
@@ -217,7 +217,7 @@ const tocarBatman =()=>{                      // se realiza que al tocar al pers
 const generarBatman = ()=> {    
     if(frames %  32 === 0){                                        
         let aus = Math.floor((Math.random() *(930-70+1))+70);        // indica aleatorio la salida de imagen que hara restara puntos al personaje        
-        let velocidad = Math.random() * (0.09 -0.07) -0.05          //velocidad de imagen
+        let velocidad = Math.random() * (0.11 -0.07) -0.09          //velocidad de imagen
         batmanArray.push(new batman(aus,velocidad))
     }
 }
