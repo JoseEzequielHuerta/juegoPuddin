@@ -11,6 +11,7 @@ let batmanArray =[]
 
 
 
+
 // se crea objeto con todas las imagenes
 const imagen ={
     portada:'assets/imagenes/portada.png',
@@ -75,6 +76,12 @@ class harley {
             return false
             }
     }
+    dibujarScore() {               
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#B268E0";
+        ctx.fillText("Score: "+this.puntuacion, 10, 80);
+    }
+    
 }  
 const golpeaEnemigo =()=>{
     enemigos.forEach((ene,index)=>{
@@ -208,7 +215,7 @@ const tocarBatman =()=>{                      // se realiza que al tocar al pers
     batmanArray.forEach((batma,index)=>{
         if(personaje.chocarEnemigo(batma)){
             batmanArray.splice(index,1)
-            personaje.puntuacion -= 1
+            personaje.puntuacion -= 50
         }
     })
     
@@ -264,7 +271,7 @@ class background {
 class martillo{                              //creo arma
     constructor(posicion,direccion){
         this.x = posicion;
-        this.y = 400;
+        this.y = 420;
         this.width = 50;
         this.height =45;
         this.direccion = direccion
@@ -385,12 +392,15 @@ const update =()=>{
     golpeaEnemigo()
     tocarBatman()
     tocarPudin()
+   
     setInterval(()=>{
         personaje.dibujarHarley()
         dibujarEnemigo()
         dibujarMartillo()
        dibujarPudin() 
-       dibujarBatman()       
+       dibujarBatman() 
+       personaje.dibujarScore()
+       personaje.dibujarVida()      
     })    
 }
 
