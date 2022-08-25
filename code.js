@@ -6,6 +6,9 @@ let inteval ; //controla velocidad de videojuego , actualizacion
 let martillos =[]  //se crea array martillo
 let enemigos = []   // array enemigos
 let frames = 0;     //indica cada que tiempo se actualiza enemigos
+let pudines =[]
+let batmanArray =[]
+
 
 // se crea objeto con todas las imagenes
 const imagen ={
@@ -20,12 +23,13 @@ const imagen ={
     logo: 'assets/imagenes/logo.png',
     martilloDer: 'assets/imagenes/martilloDer.png',
     martilloIzq: 'assets/imagenes/martilloIzq.png',
-    murcielago: 'assets/imagenes/murcielago.png',
+    murcielago: 'assets/imagenes/murcielago.jpg',
     pantallaFinal: 'assets/imagenes/pantallaFinal.png',
     pinguiDerecha: 'assets/imagenes/pinguiDerecha.png',
     pinguino: 'assets/imagenes/pinguino.png',
     pistola: 'assets/imagenes/pistola.png',
-    espantapajaro: 'assets/imagenes/espantapajaro.png',        
+    espantapajaro: 'assets/imagenes/espantapajaro.png', 
+    pudin: 'assets/imagenes/pudin.png',
 
 }
 // creo personaje
@@ -37,7 +41,7 @@ class harley {
         this.height = 90;
         this.vida = 3;              //pendiente
         this.puntuacion = 0;          //pendiente
-        this.velocidad = 8;            //le digo a que velocidad se mueve mi personaje
+        this.velocidad = 5;            //le digo a que velocidad se mueve mi personaje
         this.direccion = false        //le indico que mi personaje aviente martillo der
         this.img= new Image()
         this.img.src = imagen.harley;
@@ -66,8 +70,8 @@ class enemigo{                               //se crea enemigos
         this.posicion =posicion
         this.x = posicion
         this.y = 385
-        this.width = 90
-        this.height = 90
+        this.width = 80
+        this.height = 80
         this.velocidad = velocidad
         this.img = new Image();
         this.dibujarEnemigo()
@@ -78,8 +82,8 @@ class enemigo{                               //se crea enemigos
             this.x += this.velocidad
         }
         else{
-            this.height= 110
-            this.y =360
+            this.height= 90
+            this.y =365
             this.img.src = imagen.espantapajaro
 
             this.x -= this.velocidad
@@ -112,6 +116,85 @@ const borrarEnemigo = () =>{                   //borra
         }
     })
 }
+
+class pudin{                               //se crea postre que da vida a harley
+    constructor(posicion ,velocidad){
+        this.posicion =posicion
+        this.x = posicion
+        this.y = 0
+        this.width = 25
+        this.height = 25
+        this.velocidad = velocidad
+        this.img = new Image();
+        this.dibujarPudin()
+    }
+    dibujarPudin(){
+            this.img.src = imagen.pudin
+            this.y -= this.velocidad
+        ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
+    }    
+}
+
+const generarPudin = ()=> {    
+    if(frames %  60 === 0){                                        
+        let auxx = Math.floor((Math.random() *(930-70+1))+70);       // indica aleatorio la salida de imagen que dara vida     
+        let velocidad = Math.random() * (0.09 -0.07) -0.05          //velocidad
+            pudines.push(new pudin(auxx,velocidad))
+    }
+}
+const dibujarPudin =() =>{
+    pudines.forEach((pudi)=>{
+        pudi.dibujarPudin()
+    
+    })
+}
+const borrarPudin = () =>{                   //borra 
+    pudines.forEach((pudi,index)=>{
+        if( pudi.y >= 500){
+            pudines.splice(index , 1)
+        }
+    })
+}
+
+class batman{                               //se crea imagen que le restara puntos a harley
+    constructor(posicion ,velocidad){
+        this.posicion =posicion
+        this.x = posicion
+        this.y = 0
+        this.width = 25
+        this.height = 25
+        this.velocidad = velocidad
+        this.img = new Image();
+        this.dibujarBatman()
+    }
+    dibujarBatman(){
+            this.img.src = imagen.murcielago               //se pasa imagen
+            this.y -= this.velocidad
+        ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
+    }    
+}
+
+const generarBatman = ()=> {    
+    if(frames %  32 === 0){                                        
+        let aus = Math.floor((Math.random() *(930-70+1))+70);        // indica aleatorio la salida de imagen que hara restara puntos al personaje        
+        let velocidad = Math.random() * (0.09 -0.07) -0.05          //velocidad de imagen
+        batmanArray.push(new batman(aus,velocidad))
+    }
+}
+const dibujarBatman =() =>{
+    batmanArray.forEach((batman)=>{                       
+        batman.dibujarBatman()
+    
+    })
+}
+const borrarBatman = () =>{                   //borra 
+    batmanArray.forEach((batman,index)=>{
+        if( batman.y >= 500){
+            batmanArray.splice(index , 1)
+        }
+    })
+}
+
 //coloco valores de mi escenario
 class background {
     constructor(){
@@ -228,15 +311,19 @@ window.addEventListener('keyup',({keyCode}) =>{
 //funcion para actualizar el juego y pintar 
 const update =()=>{
     frames++
-    console.log(frames)
+    
     fondo.cambiarImg(imagen.fondoPrincipal);
     generarEnemigo()
     borraMartillo()
     borrarEnemigo()
+    generarPudin()
+    generarBatman()
     setInterval(()=>{
         personaje.dibujarHarley()
         dibujarEnemigo()
-        dibujarMartillo()        
+        dibujarMartillo()
+       dibujarPudin() 
+       dibujarBatman()       
     })    
 }
 
