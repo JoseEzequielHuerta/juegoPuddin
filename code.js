@@ -10,6 +10,7 @@ let pudines =[]
 let batmanArray =[]
 
 
+
 // se crea objeto con todas las imagenes
 const imagen ={
     portada:'assets/imagenes/portada.png',
@@ -63,7 +64,27 @@ class harley {
         this.img.src=imagen.harleyIzq     //inserto imagen para que actualize dependiendo el comando
         this.x -= this.velocidad
     }
-}          
+    chocarEnemigo(enemigo){                     //se crea chocar enemigo
+        if(this.x<enemigo.x+enemigo.width &&
+            this.x + this.width>enemigo.x &&
+            this.y < enemigo.y +enemigo.height &&
+            this.y + this.height > enemigo.y){
+                return true
+            }
+        else{
+            return false
+            }
+    }
+}  
+const golpeaEnemigo =()=>{
+    enemigos.forEach((ene,index)=>{
+        if(personaje.chocarEnemigo(ene)){
+            enemigos.splice(index,1)
+            personaje.vida -=1
+        }
+    })
+}        
+
 
 class enemigo{                               //se crea enemigos
     constructor(posicion,velocidad){
@@ -93,9 +114,9 @@ class enemigo{                               //se crea enemigos
 }
 
 const generarEnemigo = ()=> {    
-    if(frames %  45 === 0){                                        //indica cada cuanto
+    if(frames %  30 === 0){                                        //indica cada cuanto
         let aux = Math.floor((Math.random() * 2));                
-        let velocidad = Math.random() *  (0.05 -0.02) +0.05          //velocidad
+        let velocidad = Math.random() *  (0.09 -0.0) +0.05          //velocidad
         if(aux === 0){
             enemigos.push(new enemigo(0,velocidad))
         }
@@ -135,6 +156,16 @@ class pudin{                               //se crea postre que da vida a harley
     }    
 }
 
+const tocarPudin =()=>{                         // se realiza que al tocar al personaje le sume
+    pudines.forEach((pudi,index)=>{
+        if(personaje.chocarEnemigo(pudi)){
+            pudines.splice(index,1)
+            personaje.puntuacion += 1
+        }
+    })
+    
+}
+
 const generarPudin = ()=> {    
     if(frames %  60 === 0){                                        
         let auxx = Math.floor((Math.random() *(930-70+1))+70);       // indica aleatorio la salida de imagen que dara vida     
@@ -172,6 +203,16 @@ class batman{                               //se crea imagen que le restara punt
             this.y -= this.velocidad
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
     }    
+}
+
+const tocarBatman =()=>{                      // se realiza que al tocar al personaje le reste
+    batmanArray.forEach((batma,index)=>{
+        if(personaje.chocarEnemigo(batma)){
+            batmanArray.splice(index,1)
+            personaje.puntuacion -= 1
+        }
+    })
+    
 }
 
 const generarBatman = ()=> {    
@@ -245,6 +286,29 @@ class martillo{                              //creo arma
         }
         ctx.drawImage(this.img,this.x,this.y,this.width,this.height)
     }
+    matarEnemigo(enemigo){                       //se crea matar enemigo
+        if(this.x<enemigo.x+enemigo.width &&
+            this.x + this.width>enemigo.x &&
+            this.y < enemigo.y +enemigo.height &&
+            this.y + this.height > enemigo.y){
+                return true
+            }
+        else{
+            return false
+            }
+    }
+}
+
+const tocaEnemigo =()=>{                    //se hace que el enemigo muera al disparar
+    enemigos.forEach((ene, index)=>{
+        martillos.forEach((mart, index2)=>{
+            if(mart.matarEnemigo(ene)){
+                martillos.splice(index2,1)
+                enemigos.splice(index, 1)
+                personaje.puntuacion+= 30
+            }
+        })
+    })
 }
 const generaMartillo =() =>{
     if(personaje.direccion){
@@ -318,6 +382,10 @@ const update =()=>{
     borrarEnemigo()
     generarPudin()
     generarBatman()
+    tocaEnemigo()
+    golpeaEnemigo()
+    tocarBatman()
+    tocarPudin()
     setInterval(()=>{
         personaje.dibujarHarley()
         dibujarEnemigo()
