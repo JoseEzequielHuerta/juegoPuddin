@@ -26,7 +26,7 @@ const imagen ={
     martilloIzq: 'assets/imagenes/martilloIzq.png',
     murcielago: 'assets/imagenes/murcielago.jpg',
     pantallaFinal: 'assets/imagenes/pantallaFinal.png',
-    pinguiDerecha: 'assets/imagenes/pinguiDerecha.png',
+    pinguiDerecha: 'assets/imagenes/pinguinoDerecha.png',
     pinguino: 'assets/imagenes/pinguino.png',
     pistola: 'assets/imagenes/pistola.png',
     espantapajaro: 'assets/imagenes/espantapajaro.png', 
@@ -37,7 +37,7 @@ const imagen ={
 class harley {
     constructor(){
         this.x = 25;
-        this.y = 365;
+        this.y = 395;
         this.width = 90;
         this.height = 90;
         this.vida = 3;              //pendiente
@@ -85,14 +85,13 @@ const golpeaEnemigo =()=>{
     })
 }        
 
-
 class enemigo{                               //se crea enemigos
     constructor(posicion,velocidad){
         this.posicion =posicion
         this.x = posicion
-        this.y = 385
-        this.width = 80
-        this.height = 80
+        this.y = 400
+        this.width = 70
+        this.height = 70
         this.velocidad = velocidad
         this.img = new Image();
         this.dibujarEnemigo()
@@ -104,7 +103,7 @@ class enemigo{                               //se crea enemigos
         }
         else{
             this.height= 90
-            this.y =365
+            this.y =400
             this.img.src = imagen.espantapajaro
 
             this.x -= this.velocidad
