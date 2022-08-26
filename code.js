@@ -2,34 +2,30 @@ let canvas = document.querySelector('canvas')
 let ctx = canvas.getContext('2d');
 
 let iniciar = false; //variable para controlar inicio
-let inteval ; //controla velocidad de videojuego , actualizacion
+let interval;
+let interval2; //controla velocidad de videojuego , actualizacion
 let martillos =[]  //se crea array martillo
 let enemigos = []   // array enemigos
 let frames = 0;     //indica cada que tiempo se actualiza enemigos
 let pudines =[]
 let batmanArray =[]
-
-
+let vidasArray = []
 
 
 // se crea objeto con todas las imagenes
 const imagen ={
     portada:'assets/imagenes/portada.png',
-    instrucciones:'assets/imagenes/instrucciones.png',
-    dinero: 'assets/imagenes/dinero.png',
+    instrucciones:'assets/imagenes/instrucciones.png',    
     botom: 'assets/imagenes/botom.png',
     fondoPrincipal:'assets/imagenes/fondoPrincipal.png',
     harley:'assets/imagenes/harleyPer.png',
-    harleyIzq:'assets/imagenes/harleyIzq.png',
-    joker: 'assets/imagenes/joker.png',
+    harleyIzq:'assets/imagenes/harleyIzq.png',    
     logo: 'assets/imagenes/logo.png',
     martilloDer: 'assets/imagenes/martilloDer.png',
     martilloIzq: 'assets/imagenes/martilloIzq.png',
     murcielago: 'assets/imagenes/murcielago.jpg',
-    pantallaFinal: 'assets/imagenes/pantallaFinal.png',
-    pinguiDerecha: 'assets/imagenes/pinguinoDerecha.png',
-    pinguino: 'assets/imagenes/pinguino.png',
-    pistola: 'assets/imagenes/pistola.png',
+    pantallaFinal: 'assets/imagenes/pantallaFinal.jpg',    
+    pinguino: 'assets/imagenes/pinguino.png',    
     espantapajaro: 'assets/imagenes/espantapajaro.png', 
     pudin: 'assets/imagenes/pudin.png',
 
@@ -37,8 +33,8 @@ const imagen ={
 // creo personaje
 class harley {
     constructor(){
-        this.x = 25;
-        this.y = 395;
+        this.x = 350;
+        this.y = 400;
         this.width = 90;
         this.height = 90;
         this.vida = 3;              //pendiente
@@ -76,10 +72,10 @@ class harley {
             return false
             }
     }
-    dibujarScore() {               
-        ctx.font = "16px Arial";
-        ctx.fillStyle = "#B268E0";
-        ctx.fillText("Score: "+this.puntuacion, 10, 80);
+    dibujarDinero() {               
+        ctx.font = "26px Arial";
+        ctx.fillStyle = "#fff";
+        ctx.fillText(" "+this.puntuacion, 70, 110);
     }
     
 }  
@@ -88,6 +84,7 @@ const golpeaEnemigo =()=>{
         if(personaje.chocarEnemigo(ene)){
             enemigos.splice(index,1)
             personaje.vida -=1
+            vidadsArray.pop()
         }
     })
 }        
@@ -149,8 +146,8 @@ class pudin{                               //se crea postre que da vida a harley
         this.posicion =posicion
         this.x = posicion
         this.y = 0
-        this.width = 25
-        this.height = 25
+        this.width = 35
+        this.height = 35
         this.velocidad = velocidad
         this.img = new Image();
         this.dibujarPudin()
@@ -166,7 +163,8 @@ const tocarPudin =()=>{                         // se realiza que al tocar al pe
     pudines.forEach((pudi,index)=>{
         if(personaje.chocarEnemigo(pudi)){
             pudines.splice(index,1)
-            personaje.puntuacion += 1
+            personaje.vida+= 1
+            vidadsArray.push(1)
         }
     })
     
@@ -198,8 +196,8 @@ class batman{                               //se crea imagen que le restara punt
         this.posicion =posicion
         this.x = posicion
         this.y = 0
-        this.width = 25
-        this.height = 25
+        this.width = 35
+        this.height = 35
         this.velocidad = velocidad
         this.img = new Image();
         this.dibujarBatman()
@@ -338,6 +336,16 @@ const borraMartillo =() =>{                         //indico que si mi marrtillo
     })
 }
 
+const dibujarVidas=()=>{
+    let aux = 70
+    let img = new Image()
+    img.src=imagen.pudin
+    vidadsArray.forEach((vida)=>{
+        ctx.drawImage(img,aux,30,30,30)
+        aux +=40
+    })
+}
+
 const fondo = new background(); //se inicializa fondo y personaje
 const personaje  = new harley() 
 
@@ -378,6 +386,34 @@ window.addEventListener('keyup',({keyCode}) =>{
     }
 })
 
+const gameOver = ()=>{
+    clearInterval(interval)
+    let img = new Image()
+    martillos =[]  //se crea array martillo
+    enemigos = []   // array enemigos
+    pudines =[]
+    batmanArray =[]
+    vidadsArray = []
+    canvas.style.display="none"
+    let pantallaFinal = document.getElementById('pantallaFinal')
+    pantallaFinal.style.display="flex"
+    
+}
+
+const checarVida=()=>{
+    if(personaje.vida <= 0){
+        gameOver()
+    }
+}
+const dibujar=()=>{
+    dibujarVidas()
+        personaje.dibujarHarley()
+        dibujarEnemigo()
+        dibujarMartillo()
+       dibujarPudin() 
+       dibujarBatman() 
+       personaje.dibujarDinero()
+}
 //funcion para actualizar el juego y pintar 
 const update =()=>{
     frames++
@@ -392,20 +428,15 @@ const update =()=>{
     golpeaEnemigo()
     tocarBatman()
     tocarPudin()
-   
+    checarVida()
     setInterval(()=>{
-        personaje.dibujarHarley()
-        dibujarEnemigo()
-        dibujarMartillo()
-       dibujarPudin() 
-       dibujarBatman() 
-       personaje.dibujarScore()
-       personaje.dibujarVida()      
+        dibujar()
     })    
 }
 
 //se inicializa el juego
 const iniciarJuego =()=>{
+    vidadsArray=[1,2,3]
 
 // se actualiza juego 800 fotogramas x segundo
     interval = setInterval(update,1000/800)

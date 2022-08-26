@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url(./assets/imagenes/body.jpeg);
+    background-image: url(./assets/imagenes/body.jpg);
     background-position: center;
      
  }
@@ -17,7 +17,7 @@ body {
  }
  
  canvas {
-     border:5px solid white;    
+     border:10px solid #DA4BE1;    
      border-radius: 20px;
      
  }
@@ -32,11 +32,26 @@ body {
  }
  
  .start img {
-    border:3px solid rgb(141, 9, 93);
+    border:5px solid #40B93C;
     border-radius: 12px;
     margin-top: 395px;
     width: 110px;
     height: 50px;
  
  }
+ #pantallaFinal{
+    display: none;
+    width: 1000px;
+    height: 500px;
+    background-image: url(./assets/imagenes/pantallaFinal.jpg);
+    background-size: cover;
+    border:10px solid red; 
+    border-radius: 20px;
+ }
+
+    
+
+    
+     
+
 
